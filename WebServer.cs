@@ -58,6 +58,10 @@ namespace librgc
                         HttpListenerContext context = listener.EndGetContext(result);
                         HttpListenerRequest request = context.Request;
                         HttpListenerResponse response = context.Response;
+                        if (request.IsWebSocketRequest)
+                        {
+                        }
+                        else{
                         response.ProtocolVersion = new Version("1.0"); //Disable fancy http 1.1 features
 
                         string respPath = "www" + request.Url.AbsolutePath.ToLower();
@@ -98,6 +102,7 @@ namespace librgc
                             listenForNextRequest.Set();
                             response.Headers[HttpResponseHeader.Connection] = "Close";
                             response.Close();
+                        }
                         }
                     }, null);
                     listenForNextRequest.WaitOne();
