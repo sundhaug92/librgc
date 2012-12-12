@@ -12,7 +12,8 @@ namespace librgc
         private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>()
         {
             {"html","text/html"},
-            {"js","text/javascript"}
+            {"js","text/javascript"},
+            {"ico","image/vnd.microsoft.icon"}
         };
 
         private static readonly List<string> hostnames = new List<string>()
