@@ -34,14 +34,16 @@ namespace librgc
                 foreach (string keyboardCmd in s.Split(' ', '\0'))
                 {
                     string cmd = keyboardCmd.ToLower().Trim();
-                    if (keyboardCmd == "up/")
+                    if (keyboardCmd.StartsWith("up/"))
                     {
+                        Keyboard.KeyUp(int.Parse(keyboardCmd.Substring("up/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
-                    if (keyboardCmd == "down/")
-                    {
+                    if (keyboardCmd.StartsWith("down/")){
+                        Keyboard.KeyDown(int.Parse(keyboardCmd.Substring("down/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
-                    if (keyboardCmd == "tap/")
+                    if (keyboardCmd.StartsWith("tap/"))
                     {
+                        Keyboard.KeyTap(int.Parse(keyboardCmd.Substring("tap/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
                 }
                 keyboardHandler(ws);
