@@ -26,10 +26,12 @@ namespace librgc
             LeftDown();
             LeftUp();
         }
+
         public static void LeftDown()
         {
             mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
         }
+
         public static void LeftUp()
         {
             mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
@@ -46,10 +48,12 @@ namespace librgc
             RightDown();
             RightUp();
         }
+
         public static void RightDown()
         {
             mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
         }
+
         public static void RightUp()
         {
             mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
@@ -59,6 +63,28 @@ namespace librgc
         {
             SetCursorPos(x, y);
             RightClick();
+        }
+
+        public static void MiddleDown()
+        {
+            mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
+        }
+
+        public static void MiddleUp()
+        {
+            mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+        }
+
+        public static void MiddleClick()
+        {
+            MiddleDown();
+            MiddleUp();
+        }
+
+        public static void MiddleClick(Int32 x, Int32 y)
+        {
+            SetCursorPos(x, y);
+            MiddleClick();
         }
 
         public static void Scroll(int p)

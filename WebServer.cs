@@ -48,6 +48,9 @@ namespace librgc
                             case 1:
                                 Mouse.RightClick();
                                 break;
+                            case 2:
+                                Mouse.MiddleClick();
+                                break;
                         }
                     }
                     if (mouseCmd.StartsWith("position/"))
@@ -65,6 +68,9 @@ namespace librgc
                             case 1:
                                 Mouse.RightUp();
                                 break;
+                            case 2:
+                                Mouse.MiddleUp();
+                                break;
                         }
                     }
                     if (mouseCmd.StartsWith("down/"))
@@ -76,6 +82,9 @@ namespace librgc
                                 break;
                             case 1:
                                 Mouse.RightDown();
+                                break;
+                            case 2:
+                                Mouse.MiddleDown();
                                 break;
                         }
                     }
