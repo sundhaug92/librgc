@@ -24,6 +24,29 @@ namespace librgc
         };
 
         private HttpListener listener;
+        private void keyboardHandler(WebSocket ws)
+        {
+            byte[] buffer = new byte[4096];
+            var task = ws.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None).ContinueWith((ReceiveResult) =>
+            {
+                string s = System.Text.Encoding.ASCII.GetString(buffer);
+                s = s.TrimEnd('\0', ' ');
+                foreach (string keyboardCmd in s.Split(' ', '\0'))
+                {
+                    string cmd = keyboardCmd.ToLower().Trim();
+                    if (keyboardCmd == "up/")
+                    {
+                    }
+                    if (keyboardCmd == "down/")
+                    {
+                    }
+                    if (keyboardCmd == "tap/")
+                    {
+                    }
+                }
+                keyboardHandler(ws);
+            });
+        }
         private void mouseHandler(WebSocket ws)
         {
             byte[] buffer = new byte[4096];
@@ -133,6 +156,10 @@ namespace librgc
                             if (request.RawUrl.ToLower() == "/mouse")
                             {
                                 mouseHandler(wsContext.WebSocket);
+                            }
+                            if (request.RawUrl.ToLower() == "/keyboard")
+                            {
+                                keyboardHandler(wsContext.WebSocket);
                             }
                         });
                     }
