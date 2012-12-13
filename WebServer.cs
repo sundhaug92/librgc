@@ -55,6 +55,30 @@ namespace librgc
                         String[] stringArray = mouseCmd.Substring("position/".Length).Split('/');
                         Mouse.SetCursorPos(int.Parse(stringArray[0]), int.Parse(stringArray[1]));
                     }
+                    if (mouseCmd.StartsWith("up/"))
+                    {
+                        switch (int.Parse(mouseCmd.Substring("up/".Length)))
+                        {
+                            case 0:
+                                Mouse.LeftUp();
+                                break;
+                            case 1:
+                                Mouse.RightUp();
+                                break;
+                        }
+                    }
+                    if (mouseCmd.StartsWith("down/"))
+                    {
+                        switch (int.Parse(mouseCmd.Substring("down/".Length)))
+                        {
+                            case 0:
+                                Mouse.LeftDown();
+                                break;
+                            case 1:
+                                Mouse.RightDown();
+                                break;
+                        }
+                    }
                 }
                 mouseHandler(ws);
             });
