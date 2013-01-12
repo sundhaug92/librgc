@@ -28,13 +28,13 @@ var Keyboard = {
         });
     },
     Tap: function (VK) {
-        this.Connection.send("tap/" + VK);
+        this.Send("tap/" + VK);
     },
     Up: function (VK) {
-        this.Connection.send("up/" + VK);
+        this.Send("up/" + VK);
     },
     Down: function (VK) {
-        this.Connection.send("down/" + VK);
+        this.Send("down/" + VK);
     }
 };
 
