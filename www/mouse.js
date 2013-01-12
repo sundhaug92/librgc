@@ -1,10 +1,13 @@
 ﻿function LeftClick() {
+    Console.log("WARNING: Old API in use: LeftClick");
     Mouse.LeftClick();
 }
 function RightClick() {
+    Console.log("WARNING: Old API in use: RightClick");
     Mouse.RightClick();
 }
 function MiddleClick() {
+    Console.log("WARNING: Old API in use: MiddleClick");
     Mouse.MiddleClick();
 }
 var Mouse = {
