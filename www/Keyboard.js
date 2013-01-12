@@ -1,10 +1,13 @@
 ﻿function keyboardTap(VK) {
+    Console.log("WARNING: Old API in use: keyboardTap");
     Keyboard.Tap(VK);
 }
 function keyboardUp(VK) {
+    Console.log("WARNING: Old API in use: keyboardUp");
     Keyboard.Up(VK);
 }
 function keyboardDown(VK) {
+    Console.log("WARNING: Old API in use: keyboardDown");
     Keyboard.Down(VK);
 }
 
