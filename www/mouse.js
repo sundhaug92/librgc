@@ -46,5 +46,8 @@ var Mouse = {
     },
     Reset: function () {
         this.Send("reset/");
+    },
+    SetPosition: function (X, Y) {
+        this.Send("position/" + X + "/" + Y);
     }
 };
