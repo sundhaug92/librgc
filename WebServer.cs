@@ -120,7 +120,7 @@ namespace librgc
         public async Task Start()
         {
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://*:23091/");
+            listener.Prefixes.Add("http://+:23091/");
             try
             {
                 listener.Start();
@@ -133,7 +133,7 @@ namespace librgc
                 {
                     Console.WriteLine("You need to run the following command:");
                     Console.WriteLine("  netsh http add urlacl url={0} user={1}\\{2} listen=yes",
-                        "http://*:23091/", userdomain, username);
+                        "http://+:23091/", userdomain, username);
                     return;
                 }
                 else
@@ -144,7 +144,6 @@ namespace librgc
             Console.WriteLine("Listening...");
             try
             {
-                listener.Start();
                 while (true)
                 {
                     HttpListenerContext context = await listener.GetContextAsync();
@@ -190,6 +189,7 @@ namespace librgc
                         }
                         catch (FileNotFoundException)
                         {
+                            listenForNextRequest.Set();
                             response.StatusCode = 404;
                             response.StatusDescription = "File not found";
                             response.OutputStream.Close();
@@ -197,6 +197,7 @@ namespace librgc
                         }
                         catch (DirectoryNotFoundException)
                         {
+                            listenForNextRequest.Set();
                             response.StatusCode = 404;
                             response.StatusDescription = "Folder not found";
                             response.OutputStream.Close();
@@ -209,7 +210,7 @@ namespace librgc
                             response.Close();
                         }
                     }
-                    listenForNextRequest.WaitOne();
+                    listenForNextRequest.WaitOne(10);
                 }
             }
             catch (Exception e)
