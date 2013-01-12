@@ -22,6 +22,11 @@ var Keyboard = {
             this.Connection.onopen(callback);
         }
     },
+    Send: function(string){
+        this.RequireConnectionUp(function () {
+            this.Connection.send(string);
+        });
+    },
     Tap: function (VK) {
         this.Connection.send("tap/" + VK);
     },
