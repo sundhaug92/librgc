@@ -176,16 +176,18 @@ namespace librgc
                             if (respPath.EndsWith("/")) respPath += "index.html";
                             byte[] fileBuffer = System.IO.File.ReadAllBytes(respPath.Replace('/', '\\'));
 
-                            // MimeTypes
+                            // Headers
                             try
                             {
                                 response.AddHeader("Content-Type", MimeTypes[respPath.Substring(respPath.LastIndexOf('.') + 1)]);
-                                response.AddHeader("Cache-Control", "max-age=1, must-revalidate");
                             }
                             catch (IndexOutOfRangeException)
                             {
                             }
+                            response.AddHeader("Cache-Control", "max-age=1, must-revalidate");
                             response.ContentLength64 = fileBuffer.LongLength;
+                            
+                            //Send file
                             response.OutputStream.Write(fileBuffer, 0, fileBuffer.Length);
                         }
                         catch (FileNotFoundException)
