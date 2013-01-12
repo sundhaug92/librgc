@@ -18,8 +18,8 @@ var Keyboard = {
             callback();
         }
         else {
-            this.Connection = new WebSocket("ws://192.168.1.14:23091/keyboard");
-            this.Connection.onopen(callback);
+            Keyboard.Connection = new WebSocket("ws://192.168.1.14:23091/keyboard");
+            Keyboard.Connection.onopen = callback;
         }
     },
     Send: function(string){

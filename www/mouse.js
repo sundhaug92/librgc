@@ -17,8 +17,8 @@ var Mouse = {
             callback();
         }
         else {
-            this.Connection = new WebSocket("ws://192.168.1.14:23091/keyboard");
-            this.Connection.onopen(callback);
+            Mouse.Connection = new WebSocket("ws://192.168.1.14:23091/keyboard");
+            Mouse.Connection.onopen = callback;
         }
     },
     Send: function (string) {
