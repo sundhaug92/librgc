@@ -1,6 +1,4 @@
-﻿var keyboardConnection = new WebSocket("ws://192.168.1.14:23091/keyboard");
-
-function keyboardTap(VK) {
+﻿function keyboardTap(VK) {
     Keyboard.Tap(VK);
 }
 function keyboardUp(VK) {
@@ -11,6 +9,7 @@ function keyboardDown(VK) {
 }
 
 var Keyboard = {
+    Connection: new WebSocket("ws://192.168.1.14:23091/keyboard"),
     Tap: function (VK) {
         keyboardConnection.send("tap/" + VK);
     },
