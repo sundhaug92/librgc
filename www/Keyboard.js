@@ -1,14 +1,14 @@
-﻿function keyboardTap(VK) {
+﻿function keyboardTap(key) {
     Console.log("WARNING: Old API in use: keyboardTap");
-    Keyboard.Tap(VK);
+    Keyboard.Tap(key);
 }
-function keyboardUp(VK) {
+function keyboardUp(key) {
     Console.log("WARNING: Old API in use: keyboardUp");
-    Keyboard.Up(VK);
+    Keyboard.Up(key);
 }
-function keyboardDown(VK) {
+function keyboardDown(key) {
     Console.log("WARNING: Old API in use: keyboardDown");
-    Keyboard.Down(VK);
+    Keyboard.Down(key);
 }
 
 var Keyboard = {
@@ -27,14 +27,24 @@ var Keyboard = {
             Keyboard.Connection.send(string);
         });
     },
-    Tap: function (VK) {
-        this.Send("tap/" + VK);
+    Tap: function (key) {
+        this.Send("tap/" + key);
     },
-    Up: function (VK) {
-        this.Send("up/" + VK);
+    Up: function (key) {
+        this.Send("up/" + key);
     },
-    Down: function (VK) {
-        this.Send("down/" + VK);
-    }
+    Down: function (key) {
+        this.Send("down/" + key);
+    },
+    VK: {
+        VOLUME_DOWN: 0xAC,
+        VOLUME_MUTE: 0xAD,
+        VOLUME_UP: 0xAF,
+        MEDIA_NEXT_TRACK: 0xB0,
+        MEDIA_PREV_TRACK: 0xB1,
+        MEDIA_STOP: 0xB2,
+        MEDIA_PLAY_PAUSE: 0xB3
+    },
+
 };
 
