@@ -24,7 +24,7 @@ var Keyboard = {
     },
     Send: function(string){
         this.RequireConnectionUp(function () {
-            this.Connection.send(string);
+            Keyboard.Connection.send(string);
         });
     },
     Tap: function (VK) {

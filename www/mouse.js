@@ -23,7 +23,7 @@ var Mouse = {
     },
     Send: function (string) {
         this.RequireConnectionUp(function () {
-            this.Connection.send(string);
+            Mouse.Connection.send(string);
         });
     },
     MiddleClick: function () {
