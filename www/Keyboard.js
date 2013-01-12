@@ -23,13 +23,13 @@ var Keyboard = {
         }
     },
     Tap: function (VK) {
-        keyboardConnection.send("tap/" + VK);
+        this.Connection.send("tap/" + VK);
     },
     Up: function (VK) {
-        keyboardConnection.send("up/" + VK);
+        this.Connection.send("up/" + VK);
     },
     Down: function (VK) {
-        keyboardConnection.send("down/" + VK);
+        this.Connection.send("down/" + VK);
     }
 };
 
