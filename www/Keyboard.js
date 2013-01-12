@@ -37,13 +37,13 @@ var Keyboard = {
         this.Send("down/" + key);
     },
     VK: {
-        VOLUME_DOWN: 0xAC,
-        VOLUME_MUTE: 0xAD,
-        VOLUME_UP: 0xAF,
-        MEDIA_NEXT_TRACK: 0xB0,
-        MEDIA_PREV_TRACK: 0xB1,
-        MEDIA_STOP: 0xB2,
-        MEDIA_PLAY_PAUSE: 0xB3
+        VOLUME_MUTE: 'AD',
+        VOLUME_DOWN: 'AE',
+        VOLUME_UP: 'AF',
+        MEDIA_NEXT_TRACK: 'B0',
+        MEDIA_PREV_TRACK: 'B1',
+        MEDIA_STOP: 'B2',
+        MEDIA_PLAY_PAUSE: 'B3'
     },
 
 };
