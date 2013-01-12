@@ -180,7 +180,7 @@ namespace librgc
                             try
                             {
                                 response.AddHeader("Content-Type", MimeTypes[respPath.Substring(respPath.LastIndexOf('.') + 1)]);
-                                response.AddHeader("Cache-Control", "max-age=3600, must-revalidate");
+                                response.AddHeader("Cache-Control", "max-age=1, must-revalidate");
                             }
                             catch (IndexOutOfRangeException)
                             {
