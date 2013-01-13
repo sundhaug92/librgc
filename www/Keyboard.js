@@ -173,5 +173,12 @@ var Keyboard = {
                 Keyboard.Tap(Keyboard.VK.RETURN);
             }
         });
+    },
+    SpeedTest: {
+        Type: function () {
+            for (var i = 0; i < 10000; i++) {
+                Keyboard.Type("nanan\n");
+            }
+        }
     }
 };
