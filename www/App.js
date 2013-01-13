@@ -1,7 +1,7 @@
 ﻿var App = {
     Launch: function (name) {
         Keyboard.Tap(Keyboard.VK.LWIN);
-        Keyboard.Type(name + '\n');
+        window.setTimeout(function () { Keyboard.Type(name + '\n') }, 100);
     },
     Exit: function(){
         Keyboard.Down(Keyboard.VK.MENU);
