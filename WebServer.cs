@@ -30,7 +30,7 @@ namespace librgc
 
         private void keyboardHandler(WebSocket ws)
         {
-            byte[] buffer = new byte[4096*1024];
+            byte[] buffer = new byte[4096 * 4096];
             var task = ws.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None).ContinueWith((ReceiveResult) =>
             {
                 string s = System.Text.Encoding.ASCII.GetString(buffer);
@@ -57,7 +57,7 @@ namespace librgc
 
         private void mouseHandler(WebSocket ws)
         {
-            byte[] buffer = new byte[4096 * 1024];
+            byte[] buffer = new byte[4096 * 4096];
             var task = ws.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None).ContinueWith((ReceiveResult) =>
             {
                 string s = System.Text.Encoding.ASCII.GetString(buffer);
