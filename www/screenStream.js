@@ -13,7 +13,7 @@
     Init: function () {
         screenStream.Connection.binaryType = "arraybuffer";
         screenStream.Connection.onmessage = function () {
-            var destinationCanvas = document.getElementById('imageCanvas');
+            var destinationCanvas = document.getElementById('screenCanvas');
             var destinationContext = destinationCanvas.getContext('2d');
             var image = new Image();
             image.onload = function () {
