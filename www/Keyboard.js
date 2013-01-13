@@ -18,7 +18,7 @@ var Keyboard = {
             callback();
         }
         else {
-            Keyboard.Connection = new WebSocket("ws://" + window.location.host + "/keyboard");
+            Keyboard.Connection = new WebSocket(Keyboard.Connection.url);
             Keyboard.Connection.onopen = callback;
         }
     },
