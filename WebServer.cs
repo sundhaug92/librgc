@@ -4,6 +4,9 @@ using System.IO;
 using System.Net;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace librgc
 {
@@ -27,7 +30,7 @@ namespace librgc
 
         private void keyboardHandler(WebSocket ws)
         {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[4096*1024];
             var task = ws.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None).ContinueWith((ReceiveResult) =>
             {
                 string s = System.Text.Encoding.ASCII.GetString(buffer);
@@ -35,15 +38,15 @@ namespace librgc
                 foreach (string keyboardCmd in s.Split(' ', '\0'))
                 {
                     string cmd = keyboardCmd.ToLower().Trim();
-                    if (keyboardCmd.StartsWith("up/"))
+                    if (keyboardCmd.StartsWith("up/") && keyboardCmd.Length > "up/".Length)
                     {
                         Keyboard.KeyUp(int.Parse(keyboardCmd.Substring("up/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
-                    if (keyboardCmd.StartsWith("down/"))
+                    if (keyboardCmd.StartsWith("down/") && keyboardCmd.Length > "down/".Length)
                     {
                         Keyboard.KeyDown(int.Parse(keyboardCmd.Substring("down/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
-                    if (keyboardCmd.StartsWith("tap/"))
+                    if (keyboardCmd.StartsWith("tap/")&&keyboardCmd.Length>"tap/".Length)
                     {
                         Keyboard.KeyTap(int.Parse(keyboardCmd.Substring("tap/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
@@ -54,7 +57,7 @@ namespace librgc
 
         private void mouseHandler(WebSocket ws)
         {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[4096 * 1024];
             var task = ws.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None).ContinueWith((ReceiveResult) =>
             {
                 string s = System.Text.Encoding.ASCII.GetString(buffer);
@@ -126,6 +129,23 @@ namespace librgc
                 mouseHandler(ws);
             });
         }
+        private void screenHandler(WebSocket ws)
+        {
+            System.Threading.Timer t = new System.Threading.Timer((o) =>
+            {
+                lock (o)
+                {
+                    WebSocket sock = (WebSocket)o;
+                    Bitmap bmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format32bppArgb);
+                    Graphics gfx = Graphics.FromImage(bmp);
+                    gfx.CopyFromScreen(new Point(0,0),new Point(0,0), new Size(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y));
+                    byte[] buffer = (byte[])(new ImageConverter()).ConvertTo(bmp, typeof(byte[]));
+                    sock.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Binary, true, System.Threading.CancellationToken.None);
+                }
+
+            }, ws, 0, 1000);
+
+        }
 
         public async Task Start()
         {
@@ -171,6 +191,10 @@ namespace librgc
                             if (request.RawUrl.ToLower() == "/keyboard")
                             {
                                 keyboardHandler(wsContext.WebSocket);
+                            }
+                            if (request.RawUrl.ToLower() == "/screenstream")
+                            {
+                                screenHandler(wsContext.WebSocket);
                             }
                         });
                     }
