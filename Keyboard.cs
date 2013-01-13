@@ -23,7 +23,6 @@ namespace librgc
             var v = MapVirtualKey((uint)VK, MAPVK_VK_TO_CHAR);
             bool b = v != 0;
             int flags = b ? 1 : 0;
-            Console.WriteLine("D {0}:{1}:{2}", key, scan, flags, ExtraInfo);
             keybd_event((byte)key, scan, flags, ExtraInfo);
         }
 
@@ -33,7 +32,6 @@ namespace librgc
             var v = MapVirtualKey((uint)VK, MAPVK_VK_TO_CHAR);
             bool b = v != 0;
             int flags = b ? 3 : 2;
-            Console.WriteLine("U {0}:{1}:{2}", key, scan, flags, ExtraInfo);
             keybd_event((byte)key, scan, flags, ExtraInfo);
         }
 
