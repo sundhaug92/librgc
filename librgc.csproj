@@ -89,6 +89,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="www\AOE2\AOE2.js" />
+    <Content Include="www\AOE2\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="www\App.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
