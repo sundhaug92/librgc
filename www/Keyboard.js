@@ -41,6 +41,8 @@ var Keyboard = {
         TAB: '09',
 
         ENTER: '0D',
+        RETURN: '0D',
+
 
         SHIFT: '10',
         CONTROL: '11',
@@ -110,7 +112,31 @@ var Keyboard = {
         LAUNCH_MAIL: 'B4',
         LAUNCH_MEDIA_SELECT: 'B5',
         LAUNCH_APP1: 'B6',
-        LAUNCH_APP2: 'B7'
+        LAUNCH_APP2: 'B7',
+
+        OEM_PERIOD: 'BE'
+    },
+    Type: function (string) {
+        var arr = string.split('');
+        arr.forEach(function (element, index, array) {
+            if ((element >= 'a') && (element <= 'z')) {
+                Keyboard.Tap(element.toUpperCase().charCodeAt(0).toString(16));
+            }
+            else if ((element >= 'A') && (element <= 'Z')) {
+                Keyboard.Tap(Keyboard.VK.CAPSLOCK);
+                Keyboard.Type(element.toLowerCase());
+                Keyboard.Tap(Keyboard.VK.CAPSLOCK);
+            }
+            else if (element == '.') {
+                Keyboard.Tap(Keyboard.VK.OEM_PERIOD);
+            }
+            else if (element == ' ') {
+                Keyboard.Tap(Keyboard.VK.SPACE);
+            }
+            else if (element == '\n') {
+                Keyboard.Tap(Keyboard.VK.RETURN);
+            }
+        });
     }
 };
 
