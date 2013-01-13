@@ -11,13 +11,13 @@ function MiddleClick() {
     Mouse.MiddleClick();
 }
 var Mouse = {
-    Connection: new WebSocket("ws://192.168.1.14:23091/mouse"),
+    Connection: new WebSocket("ws://" + window.location.host + "/keyboard"),
     RequireConnectionUp: function (callback) {
         if (this.Connection.readyState == this.Connection.OPEN) {
             callback();
         }
         else {
-            Mouse.Connection = new WebSocket("ws://192.168.1.14:23091/keyboard");
+            Mouse.Connection = new WebSocket(Mouse.Connection.url);
             Mouse.Connection.onopen = callback;
         }
     },

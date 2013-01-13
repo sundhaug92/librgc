@@ -12,13 +12,13 @@ function keyboardDown(key) {
 }
 
 var Keyboard = {
-    Connection: new WebSocket("ws://192.168.1.14:23091/keyboard"),
+    Connection: new WebSocket("ws://" + window.location.host + "/keyboard"),
     RequireConnectionUp: function (callback) {
         if (this.Connection.readyState == this.Connection.OPEN) {
             callback();
         }
         else {
-            Keyboard.Connection = new WebSocket("ws://192.168.1.14:23091/keyboard");
+            Keyboard.Connection = new WebSocket("ws://" + window.location.host + "/keyboard");
             Keyboard.Connection.onopen = callback;
         }
     },
