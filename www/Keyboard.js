@@ -22,7 +22,7 @@ var Keyboard = {
             Keyboard.Connection.onopen = callback;
         }
     },
-    Send: function(string){
+    Send: function (string) {
         this.RequireConnectionUp(function () {
             Keyboard.Connection.send(string);
         });
@@ -42,7 +42,6 @@ var Keyboard = {
 
         ENTER: '0D',
         RETURN: '0D',
-
 
         SHIFT: '10',
         CONTROL: '11',
@@ -139,4 +138,3 @@ var Keyboard = {
         });
     }
 };
-

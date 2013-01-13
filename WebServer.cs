@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using System.Net.WebSockets;
+using System.Threading.Tasks;
 
 namespace librgc
 {
@@ -24,6 +24,7 @@ namespace librgc
         };
 
         private HttpListener listener;
+
         private void keyboardHandler(WebSocket ws)
         {
             byte[] buffer = new byte[4096];
@@ -38,7 +39,8 @@ namespace librgc
                     {
                         Keyboard.KeyUp(int.Parse(keyboardCmd.Substring("up/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
-                    if (keyboardCmd.StartsWith("down/")){
+                    if (keyboardCmd.StartsWith("down/"))
+                    {
                         Keyboard.KeyDown(int.Parse(keyboardCmd.Substring("down/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
                     if (keyboardCmd.StartsWith("tap/"))
@@ -49,6 +51,7 @@ namespace librgc
                 keyboardHandler(ws);
             });
         }
+
         private void mouseHandler(WebSocket ws)
         {
             byte[] buffer = new byte[4096];
@@ -70,9 +73,11 @@ namespace librgc
                             case 0:
                                 Mouse.LeftClick();
                                 break;
+
                             case 1:
                                 Mouse.RightClick();
                                 break;
+
                             case 2:
                                 Mouse.MiddleClick();
                                 break;
@@ -90,9 +95,11 @@ namespace librgc
                             case 0:
                                 Mouse.LeftUp();
                                 break;
+
                             case 1:
                                 Mouse.RightUp();
                                 break;
+
                             case 2:
                                 Mouse.MiddleUp();
                                 break;
@@ -105,9 +112,11 @@ namespace librgc
                             case 0:
                                 Mouse.LeftDown();
                                 break;
+
                             case 1:
                                 Mouse.RightDown();
                                 break;
+
                             case 2:
                                 Mouse.MiddleDown();
                                 break;
@@ -117,6 +126,7 @@ namespace librgc
                 mouseHandler(ws);
             });
         }
+
         public async Task Start()
         {
             HttpListener listener = new HttpListener();
@@ -186,7 +196,7 @@ namespace librgc
                             }
                             response.AddHeader("Cache-Control", "max-age=1, must-revalidate");
                             response.ContentLength64 = fileBuffer.LongLength;
-                            
+
                             //Send file
                             response.OutputStream.Write(fileBuffer, 0, fileBuffer.Length);
                         }
