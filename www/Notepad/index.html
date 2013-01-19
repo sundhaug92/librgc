@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="/Mouse.js"></script>
+    <script src="/Keyboard.js"></script>
+    <script src="/App.js"></script>
+
+    <script>
+        function keypress(e) {
+            if (String.fromCharCode(e.charCode) != "") {
+                if (e.shiftKey) Keyboard.Down(Keyboard.VK.SHIFT);
+                if (e.ctrlKey) Keyboard.Down(Keyboard.VK.CONTROL);
+                if (e.altKey) Keyboard.Down(Keyboard.VK.MENU);
+
+
+                Keyboard.Type(String.fromCharCode(e.charCode));
+
+                if (e.altKey) Keyboard.Up(Keyboard.VK.MENU);
+                if (e.ctrlKey) Keyboard.Up(Keyboard.VK.CONTROL);
+                if (e.shiftKey) Keyboard.Up(Keyboard.VK.SHIFT);
+            }
+            if (e.keyCode == 13) {
+                Keyboard.Type("\n");
+            }
+        }
+    </script>
+</head>
+<body>
+    <input type="text" onkeypress="keypress(event)" />
+</body>
+</html>
