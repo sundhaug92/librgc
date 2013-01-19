@@ -150,6 +150,9 @@ var Keyboard = {
         LAUNCH_APP1: 'B6',
         LAUNCH_APP2: 'B7',
 
+        OEM_COMMA: 'BC',
+        OEM_MINUS:'BD',
+
         OEM_PERIOD: 'BE'
     },
     Type: function (string) {
@@ -171,6 +174,9 @@ var Keyboard = {
             }
             else if (element == '.') {
                 strSend += " tap/" + Keyboard.VK.OEM_PERIOD;
+            }
+            else if (element == ',') {
+                strSend += " tap/" + Keyboard.VK.OEM;
             }
             else if (element == ' ') {
                 strSend += " tap/" + Keyboard.VK.SPACE;
