@@ -154,25 +154,32 @@ var Keyboard = {
     },
     Type: function (string) {
         var arr = string.split('');
+        var strSend = "";
         arr.forEach(function (element, index, array) {
+            if (strSend.length >= 120) {
+                Keyboard.Send(strSend);
+                strSend = "";
+            }
+
             if ((element >= 'a') && (element <= 'z')) {
-                Keyboard.Tap(element.toUpperCase().charCodeAt(0).toString(16));
+                strSend += " tap/" + element.toUpperCase().charCodeAt(0).toString(16);
             }
             else if ((element >= 'A') && (element <= 'Z')) {
-                Keyboard.Tap(Keyboard.VK.CAPSLOCK);
+                strSend += " tap/" + Keyboard.VK.CAPSLOCK;
                 Keyboard.Type(element.toLowerCase());
-                Keyboard.Tap(Keyboard.VK.CAPSLOCK);
+                strSend += " tap/" + Keyboard.VK.CAPSLOCK;
             }
             else if (element == '.') {
-                Keyboard.Tap(Keyboard.VK.OEM_PERIOD);
+                strSend += " tap/" + Keyboard.VK.OEM_PERIOD;
             }
             else if (element == ' ') {
-                Keyboard.Tap(Keyboard.VK.SPACE);
+                strSend += " tap/" + Keyboard.VK.SPACE;
             }
             else if (element == '\n') {
-                Keyboard.Tap(Keyboard.VK.RETURN);
+                strSend += " tap/" + Keyboard.VK.RETURN;
             }
         });
+        Keyboard.Send(strSend);
     },
     SpeedTest: {
         Type: function () {
