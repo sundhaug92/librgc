@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace librgc
@@ -26,8 +26,6 @@ namespace librgc
             {"localhost"}
         };
 
-        private HttpListener listener;
-
         private void keyboardHandler(WebSocket ws)
         {
             byte[] buffer = new byte[4096 * 4096];
@@ -46,7 +44,7 @@ namespace librgc
                     {
                         Keyboard.KeyDown(int.Parse(keyboardCmd.Substring("down/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
-                    if (keyboardCmd.StartsWith("tap/")&&keyboardCmd.Length>"tap/".Length)
+                    if (keyboardCmd.StartsWith("tap/") && keyboardCmd.Length > "tap/".Length)
                     {
                         Keyboard.KeyTap(int.Parse(keyboardCmd.Substring("tap/".Length), System.Globalization.NumberStyles.AllowHexSpecifier));
                     }
@@ -129,28 +127,12 @@ namespace librgc
                 mouseHandler(ws);
             });
         }
-        private void screenHandler(WebSocket ws)
-        {
-            System.Threading.Timer t = new System.Threading.Timer((o) =>
-            {
-                lock (o)
-                {
-                    WebSocket sock = (WebSocket)o;
-                    Bitmap bmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format32bppArgb);
-                    Graphics gfx = Graphics.FromImage(bmp);
-                    gfx.CopyFromScreen(new Point(0,0),new Point(0,0), new Size(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y));
-                    byte[] buffer = (byte[])(new ImageConverter()).ConvertTo(bmp, typeof(byte[]));
-                    sock.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Binary, true, System.Threading.CancellationToken.None);
-                }
 
-            }, ws, 0, 1000);
-
-        }
-
-        public async Task Start()
+        public async Task Start(bool useEncryption = false)
         {
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://+:23091/");
+            if (useEncryption) listener.Prefixes.Add("https://+:23091/");
+            else listener.Prefixes.Add("http://+:23091/");
             try
             {
                 listener.Start();
@@ -162,8 +144,8 @@ namespace librgc
                 if (hle.ErrorCode == 5)
                 {
                     Console.WriteLine("You need to run the following command:");
-                    Console.WriteLine("  netsh http add urlacl url={0} user={1}\\{2} listen=yes",
-                        "http://+:23091/", userdomain, username);
+                    if (useEncryption) Console.WriteLine("  netsh http add urlacl url={0} user={1}\\{2} listen=yes", "https://+:23091/", userdomain, username);
+                    else Console.WriteLine("  netsh http add urlacl url={0} user={1}\\{2} listen=yes", "http://+:23091/", userdomain, username);
                     return;
                 }
                 else
@@ -179,77 +161,93 @@ namespace librgc
                     HttpListenerContext context = await listener.GetContextAsync();
                     HttpListenerRequest request = context.Request;
                     HttpListenerResponse response = context.Response;
-                    if (request.IsWebSocketRequest)
+                    if (request.Cookies["auth"] != null)
                     {
-                        context.AcceptWebSocketAsync(null).ContinueWith((AcceptWebSocketAsyncResult) =>
+                        if (request.IsWebSocketRequest)
                         {
-                            var wsContext = AcceptWebSocketAsyncResult.Result;
-                            if (request.RawUrl.ToLower() == "/mouse")
+                            context.AcceptWebSocketAsync(null).ContinueWith((AcceptWebSocketAsyncResult) =>
                             {
-                                mouseHandler(wsContext.WebSocket);
-                            }
-                            if (request.RawUrl.ToLower() == "/keyboard")
+                                var wsContext = AcceptWebSocketAsyncResult.Result;
+                                if (request.RawUrl.ToLower() == "/mouse")
+                                {
+                                    mouseHandler(wsContext.WebSocket);
+                                }
+                                if (request.RawUrl.ToLower() == "/keyboard")
+                                {
+                                    keyboardHandler(wsContext.WebSocket);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            response.ProtocolVersion = new Version("1.0"); //Disable fancy http 1.1 features
+
+                            string respPath = "www" + request.Url.AbsolutePath.ToLower();
+
+                            //while ((respPath.EndsWith("/")) && (respPath!="www/")) respPath = respPath.Substring(0,respPath.LastIndexOf("/"));
+                            try
                             {
-                                keyboardHandler(wsContext.WebSocket);
+                                if (respPath.EndsWith("/")) respPath += "index.html";
+                                byte[] fileBuffer = System.IO.File.ReadAllBytes(respPath.Replace('/', '\\'));
+
+                                // Headers
+                                try
+                                {
+                                    response.AddHeader("Content-Type", MimeTypes[respPath.Substring(respPath.LastIndexOf('.') + 1)]);
+                                }
+                                catch (IndexOutOfRangeException)
+                                {
+                                }
+                                response.AddHeader("Cache-Control", "max-age=1, must-revalidate");
+                                response.ContentLength64 = fileBuffer.LongLength;
+
+                                //Send file
+                                response.OutputStream.Write(fileBuffer, 0, fileBuffer.Length);
                             }
-                            if (request.RawUrl.ToLower() == "/screenstream")
+                            catch (FileNotFoundException)
                             {
-                                screenHandler(wsContext.WebSocket);
+                                listenForNextRequest.Set();
+                                response.StatusCode = 404;
+                                response.StatusDescription = "File not found";
+                                response.OutputStream.Close();
+                                response.Close();
                             }
-                        });
+                            catch (DirectoryNotFoundException)
+                            {
+                                listenForNextRequest.Set();
+                                response.StatusCode = 404;
+                                response.StatusDescription = "Folder not found";
+                                response.OutputStream.Close();
+                                response.Close();
+                            }
+                            finally
+                            {
+                                listenForNextRequest.Set();
+                                response.Headers[HttpResponseHeader.Connection] = "Close";
+                                response.Close();
+                            }
+                        }
+                        listenForNextRequest.WaitOne(10);
+                    }
+                    else if (request.Url.AbsolutePath != "/login.cgi")
+                    {
+                        response.Redirect("/login.cgi?path=" + request.Url.AbsolutePath);
+                        response.Close();
                     }
                     else
                     {
-                        response.ProtocolVersion = new Version("1.0"); //Disable fancy http 1.1 features
-
-                        string respPath = "www" + request.Url.AbsolutePath.ToLower();
-
-                        //while ((respPath.EndsWith("/")) && (respPath!="www/")) respPath = respPath.Substring(0,respPath.LastIndexOf("/"));
-                        try
+                        response.Cookies.Add(new Cookie("auth", "ghjk"));
+                        if (!request.Url.Query.Contains("path="))
+                            response.Redirect(request.UrlReferrer.AbsolutePath);
+                        else
                         {
-                            if (respPath.EndsWith("/")) respPath += "index.html";
-                            byte[] fileBuffer = System.IO.File.ReadAllBytes(respPath.Replace('/', '\\'));
-
-                            // Headers
-                            try
-                            {
-                                response.AddHeader("Content-Type", MimeTypes[respPath.Substring(respPath.LastIndexOf('.') + 1)]);
-                            }
-                            catch (IndexOutOfRangeException)
-                            {
-                            }
-                            response.AddHeader("Cache-Control", "max-age=1, must-revalidate");
-                            response.ContentLength64 = fileBuffer.LongLength;
-
-                            //Send file
-                            response.OutputStream.Write(fileBuffer, 0, fileBuffer.Length);
+                            response.Redirect(request.Url.Query.Substring("path=".Length + 1));
                         }
-                        catch (FileNotFoundException)
-                        {
-                            listenForNextRequest.Set();
-                            response.StatusCode = 404;
-                            response.StatusDescription = "File not found";
-                            response.OutputStream.Close();
-                            response.Close();
-                        }
-                        catch (DirectoryNotFoundException)
-                        {
-                            listenForNextRequest.Set();
-                            response.StatusCode = 404;
-                            response.StatusDescription = "Folder not found";
-                            response.OutputStream.Close();
-                            response.Close();
-                        }
-                        finally
-                        {
-                            listenForNextRequest.Set();
-                            response.Headers[HttpResponseHeader.Connection] = "Close";
-                            response.Close();
-                        }
+                        response.Close();
                     }
-                    listenForNextRequest.WaitOne(10);
                 }
             }
+
             catch (Exception e)
             {
                 Console.WriteLine(e);
