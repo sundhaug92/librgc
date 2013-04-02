@@ -1,5 +1,4 @@
-﻿function isSecure() { return location.protocol == "https:";}
-function LeftClick() {
+﻿function LeftClick() {
     Console.log("WARNING: Old API in use: LeftClick");
     Mouse.LeftClick();
 }
