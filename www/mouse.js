@@ -1,4 +1,5 @@
-﻿function LeftClick() {
+﻿function isSecure() { return location.protocol == "https:";}
+function LeftClick() {
     Console.log("WARNING: Old API in use: LeftClick");
     Mouse.LeftClick();
 }
@@ -11,7 +12,7 @@ function MiddleClick() {
     Mouse.MiddleClick();
 }
 var Mouse = {
-    Connection: new WebSocket("ws://" + window.location.host + "/keyboard"),
+    Connection: new WebSocket((isSecure() ? "wss://" : "ws://") + window.location.host + "/keyboard"),
     RequireConnectionUp: function (callback) {
         if (this.Connection.readyState == this.Connection.OPEN) {
             callback();

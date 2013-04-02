@@ -12,7 +12,7 @@ function keyboardDown(key) {
 }
 
 var Keyboard = {
-    Connection: new WebSocket("ws://" + window.location.host + "/keyboard"),
+    Connection: new WebSocket((isSecure() ? "wss://" : "ws://") + window.location.host + "/keyboard"),
     RequireConnectionUp: function (callback) {
         if (this.Connection.readyState == this.Connection.OPEN) {
             callback();

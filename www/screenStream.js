@@ -1,5 +1,5 @@
 ﻿var screenStream = {
-    Connection: new WebSocket("ws://" + window.location.host + "/screenstream"),
+    Connection: new WebSocket((isScure()?"wss://":"ws://") + window.location.host + "/screenstream"),
     RequireConnectionUp: function (callback) {
         if (this.Connection.readyState == this.Connection.OPEN) {
             callback();
