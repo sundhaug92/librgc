@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace librgc
 {
-    internal class Keyboard
+    public class Keyboard
     {
         private const uint MAPVK_VK_TO_VSC = 0x00;
         private const uint MAPVK_VSC_TO_VK = 0x01;
