@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using fakeUser;
 
 namespace librgc
 {
