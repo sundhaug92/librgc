@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace librgc
 {
@@ -7,9 +9,6 @@ namespace librgc
     {
         [DllImport("user32.dll", ExactSpelling = true)]
         public static extern long mouse_event(Int32 dwFlags, Int32 dx, Int32 dy, Int32 cButtons, Int32 dwExtraInfo);
-
-        [DllImport("user32.dll", ExactSpelling = true)]
-        public static extern void SetCursorPos(Int32 x, Int32 y);
 
         public const Int32 MOUSEEVENTF_ABSOLUTE = 0x8000;
         public const Int32 MOUSEEVENTF_LEFTDOWN = 0x0002;
@@ -25,6 +24,22 @@ namespace librgc
         {
             LeftDown();
             LeftUp();
+        }
+
+        public static void SetCursorPos(Int32 x, Int32 y)
+        {
+            Position = new Point(x, y);
+        }
+        public static Point Position
+        {
+            get
+            {
+                return Cursor.Position;
+            }
+            set
+            {
+                Cursor.Position = value;
+            }
         }
 
         public static void LeftDown()
